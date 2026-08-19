@@ -3,129 +3,45 @@
 config:
   layout: elk
 ---
-graph LR
-    Activities((Activities))
-    Customer((Customer))
-    Lead((Lead))
-    Supplier((Supplier))
-    BusinessPartnerMaster((Business Partner<br/>Master))
-    
-    EquipmentCard((Equipment Card))
-    ServiceCall((Service Call))
-    ServiceContract((Service Contract))
-    ServiceBilling((Service Billing))
-    ItemMaster((Item Master))
-    WarehouseManagement((Warehouse<br/>Management))
-    SalesOrder((Sales Order))
-    DeliveryNote((Delivery Note))
-    
-    Opportunity((Opportunity))
-    Pricing((Pricing))
-    SalesQuotation((Sales Quotation))
-    PurchaseRequest((Purchase Request))
-    PurchaseQuotation((Purchase Quotation))
-    PurchaseOrder((Purchase Order))
-    GoodsReceiptPO((Goods Receipt PO))
-    
-    ProductionOrder((Production Order))
-    IssueToProduction((Issue to Production))
-    ReceiptFromProduction((Receipt from Production))
-    
-    Sourcing((Sourcing))
-    MaterialRequirementsPlanning((Material Requirements<br/>Planning))
-    DemandPlanning((Demand Planning))
-    BackorderReporting((Backorder<br/>Reporting))
-    BillOfMaterials((Bill of Materials))
-    
-    ChartOfAccounts((Chart of Accounts))
-    GeneralLedgerAccounts((General Ledger<br/>Accounts))
-    GLAccountDetermination((G/L Account<br/>Determination))
-    CostAccounting((Cost Accounting))
-    InventoryAuditReport((Inventory Audit<br/>Report))
-    AccountBalancesReport((Account Balances<br/>Report))
-    
-    FinancialPostings((Financial<br/>Postings))
-    JournalEntries((Journal Entries))
-    APInvoice((AP Invoice))
-    ARInvoice((AR Invoice))
-    APARIndicator((AP / AR))
-    CashManagement((Cash Management))
-    IncomingPayments((Incoming<br/>Payments))
-    OutgoingPayments((Outgoing<br/>Payments))
-    Reconciliation((Reconciliation))
-    FinancialReporting((Financial<br/>Reporting))
-    ProductReporting((Product<br/>Reporting))
-    
-    Activities --> Customer
-    Customer --> Lead
-    Lead --> Supplier
-    Supplier --> BusinessPartnerMaster
-    
-    Customer -.-> EquipmentCard
-    EquipmentCard -- Service --> ServiceCall
-    ServiceCall -- Service --> ServiceContract
-    ServiceContract -- Service --> ServiceBilling
-    
-    EquipmentCard --> ItemMaster
-    ItemMaster --> WarehouseManagement
-    WarehouseManagement --> SalesOrder
-    SalesOrder --> DeliveryNote
-    DeliveryNote --> GoodsReceiptPO
-    
-    Customer --> Opportunity
-    Opportunity -- Sales --> Pricing
-    Pricing --> SalesQuotation
-    SalesQuotation --> SalesOrder
-    
-    Customer --> PurchaseRequest
-    PurchaseRequest -- Purchasing --> PurchaseQuotation
-    PurchaseQuotation --> PurchaseOrder
-    PurchaseOrder --> GoodsReceiptPO
-    
-    PurchaseOrder --> ProductionOrder
-    ProductionOrder --> IssueToProduction
-    IssueToProduction --> ReceiptFromProduction
-    
-    Sourcing -- Production --> ProductionOrder
-    MaterialRequirementsPlanning -- Production --> ProductionOrder
-    
-    PurchaseRequest -- Sourcing --> Sourcing
-    Sourcing --> MaterialRequirementsPlanning
-    MaterialRequirementsPlanning --> DemandPlanning
-    DemandPlanning --> BackorderReporting
-    
-    BusinessPartnerMaster --> BillOfMaterials
-    BillOfMaterials -.-> ChartOfAccounts
-    
-    ChartOfAccounts --> GeneralLedgerAccounts
-    GeneralLedgerAccounts --> GLAccountDetermination
-    GLAccountDetermination --> CostAccounting
-    
-    DemandPlanning --> CostAccounting
-    BackorderReporting --> InventoryAuditReport
-    CostAccounting --> InventoryAuditReport
-    InventoryAuditReport --> AccountBalancesReport
-    
-    GoodsReceiptPO --> FinancialPostings
-    ProductionOrder -.-> FinancialPostings
-    FinancialPostings --> JournalEntries
-    JournalEntries --> APARIndicator
-    
-    SalesOrder --> DeliveryNote
-    DeliveryNote --> ARInvoice
-    ARInvoice --> APARIndicator
-    
-    PurchaseOrder --> GoodsReceiptPO
-    GoodsReceiptPO --> APInvoice
-    APInvoice --> APARIndicator
-    
-    APARIndicator --> CashManagement
-    APARIndicator --> IncomingPayments
-    CashManagement --> IncomingPayments
-    IncomingPayments --> Reconciliation
-    IncomingPayments --> OutgoingPayments
-    Reconciliation --> FinancialReporting
-    OutgoingPayments --> FinancialReporting
-    ReceiptFromProduction --> ProductReporting
-    AccountBalancesReport --> ProductReporting
-    FinancialReporting --> ProductReporting
+flowchart TB
+    Activities(("Activities")) ---- Customer(("Customer"))
+    Customer --- Opportunity(("Opportunity")) & Lead(("Lead"))
+    Customer ---- EquipmentCard(("Equipment Card"))
+    Lead --- Supplier(("Supplier")) & Opportunity
+    Supplier --- PurchaseQuotation(("Purchase Quotation")) & BusinessPartnerMaster(("Business Partner<br>Master"))
+    Opportunity --- Pricing(("Pricing"))
+    Pricing --- ItemMaster(("Item Master")) & SalesQuotation(("Sales Quotation"))
+    SalesQuotation --- SalesOrder(("Sales Order"))
+    SalesOrder --- DeliveryNote(("Delivery Note")) & WarehouseManagement(("Warehouse<br>Management"))
+    WarehouseManagement --- PurchaseOrder(("Purchase Order")) & ItemMaster
+    PurchaseOrder ---- ProductionOrder(("Production Order")) & GoodsReceiptPO(("Goods Receipt PO")) & Sourcing(("Sourcing")) & PurchaseQuotation
+    PurchaseQuotation --- PurchaseRequest(("Purchase Request"))
+    ItemMaster --- EquipmentCard
+    EquipmentCard --- ServiceCall(("Service Call"))
+    ServiceCall --- ServiceContract(("Service Contract"))
+    ServiceContract --- ServiceBilling(("Service Billing"))
+    Sourcing --- ProductionOrder
+    Sourcing ---- MaterialRequirementsPlanning(("Material Requirements<br>Planning"))
+    MaterialRequirementsPlanning ---> BillOfMaterials(("Bill of Materials"))
+    BillOfMaterials --- DemandPlanning(("Demand Planning"))
+    ProductionOrder --- DemandPlanning & BackorderReporting(("Backorder<br>Reporting")) & IssueToProduction(("Issue to Production"))
+    DemandPlanning --- BackorderReporting
+    BackorderReporting --- InventoryAuditReport(("Inventory Audit<br>Report"))
+    InventoryAuditReport --- IssueToProduction & AccountBalancesReport(("Account Balances<br>Report"))
+    AccountBalancesReport --- ReceiptFromProduction(("Receipt from Production")) & ProductReporting(("Product<br>Reporting"))
+    DeliveryNote --- ARInvoice(("AR Invoice")) & GoodsReceiptPO
+    GoodsReceiptPO --- IssueToProduction & APInvoice(("AP Invoice"))
+    IssueToProduction --- ReceiptFromProduction & JournalEntries(("Journal Entries"))
+    JournalEntries --- ReceiptFromProduction & CostAccounting(("Cost Accounting"))
+    CostAccounting --- GLAccountDetermination(("G/L Account<br>Determination"))
+    GLAccountDetermination --- GeneralLedgerAccounts(("General Ledger<br>Accounts"))
+    GeneralLedgerAccounts --- ChartOfAccounts(("Chart of Accounts"))
+    ReceiptFromProduction --- APInvoice & ProductReporting
+    ProductReporting --- FinancialReporting(("Financial<br>Reporting"))
+    FinancialReporting --- Reconciliation(("Reconciliation"))
+    Reconciliation --- CashManagement(("Cash Management"))
+    CashManagement --- APARIndicator(("AP / AR")) & IncomingPayments(("Incoming<br>Payments"))
+    APARIndicator --- ARInvoice
+    ARInvoice --- ApInvoice["ApInvoice"] & IncomingPayments
+    IncomingPayments --- OutgoingPayments(("Outgoing<br>Payments"))
+    OutgoingPayments --- APInvoice
