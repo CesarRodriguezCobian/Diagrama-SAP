@@ -42,6 +42,6 @@ flowchart TB
     Reconciliation --- CashManagement(("Cash Management"))
     CashManagement --- APARIndicator(("AP / AR")) & IncomingPayments(("Incoming<br>Payments"))
     APARIndicator --- ARInvoice
-    ARInvoice --- ApInvoice["ApInvoice"] & IncomingPayments
+    ARInvoice --- APInvoice & IncomingPayments
     IncomingPayments --- OutgoingPayments(("Outgoing<br>Payments"))
     OutgoingPayments --- APInvoice
