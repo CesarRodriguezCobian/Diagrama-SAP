@@ -1,7 +1,3 @@
----
-config:
-  layout: elk
----
 graph LR
     Activities((Activities))
     Customer((Customer))
