@@ -9,16 +9,16 @@ flowchart TD
     classDef pago fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#1B5E20;
     classDef iniciofin fill:#4A148C,stroke:#12005E,stroke-width:3px,color:#FFFFFF;
 
-    Inicio(["🏁 Inicio"]):::iniciofin
-    Inicio --> SO[("Pedido de Venta<br/>Sales Order")]:::documento
-    SO --> TipoEntrega{{"Tipo de entrega"}}:::decision
-    TipoEntrega -->|Completa| EntregaTotal[("Entrega Completa<br/>Delivery")]:::documento
-    TipoEntrega -->|Parcial| EntregaParcial[("Entrega Parcial<br/>Delivery")]:::documento
-    EntregaTotal --> FacturaTotal[["Factura Cliente<br/>A/R Invoice"]]:::documento
-    EntregaParcial --> FacturaParcial[["Factura Cliente<br/>A/R Invoice"]]:::documento
-    FacturaTotal --> PagoTotal[/"Pago Recibido<br/>Incoming Payment"/]:::pago
-    FacturaParcial --> PagoParcial[/"Pago Recibido<br/>Incoming Payment"/]:::pago
-    PagoTotal --> Fin(["🏆 Pedido Completado"]):::iniciofin
-    PagoParcial --> Pendiente{{"¿Artículos pendientes<br/>por entregar?"}}:::decision
-    Pendiente -->|Sí| EntregaParcial
-    Pendiente -->|No| Fin
+    Start(["🏁 Proceso Iniciado"]):::iniciofin
+    Start --> Orden[("Orden de Cliente<br/>Sales Order")]:::documento
+    Orden --> Modalidad{{"¿Cómo se entregará?"}}:::decision
+    Modalidad -->|Todo junto| DespachoCompleto[("Despacho Completo<br/>Delivery")]:::documento
+    Modalidad -->|Por partes| DespachoParcial[("Despacho Parcial<br/>Delivery")]:::documento
+    DespachoCompleto --> CobroCompleto[["Documento de Cobro<br/>A/R Invoice"]]:::documento
+    DespachoParcial --> CobroParcial[["Documento de Cobro<br/>A/R Invoice"]]:::documento
+    CobroCompleto --> AbonoCompleto[/"Registro de Abono<br/>Incoming Payment"/]:::pago
+    CobroParcial --> AbonoParcial[/"Registro de Abono<br/>Incoming Payment"/]:::pago
+    AbonoCompleto --> End(["🏆 Orden Cerrada"]):::iniciofin
+    AbonoParcial --> Verificacion{{"¿Quedan unidades sin despachar?"}}:::decision
+    Verificacion -->|Sí| DespachoParcial
+    Verificacion -->|No| End
