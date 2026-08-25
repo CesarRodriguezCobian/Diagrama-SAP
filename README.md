@@ -3,45 +3,22 @@
 config:
   layout: elk
 ---
-flowchart TB
-    Activities(("Activities")) ---- Customer(("Customer"))
-    Customer --- Opportunity(("Opportunity")) & Lead(("Lead"))
-    Customer ---- EquipmentCard(("Equipment Card"))
-    Lead --- Supplier(("Supplier")) & Opportunity
-    Supplier --- PurchaseQuotation(("Purchase Quotation")) & BusinessPartnerMaster(("Business Partner<br>Master"))
-    Opportunity --- Pricing(("Pricing"))
-    Pricing --- ItemMaster(("Item Master")) & SalesQuotation(("Sales Quotation"))
-    SalesQuotation --- SalesOrder(("Sales Order"))
-    SalesOrder --- DeliveryNote(("Delivery Note")) & WarehouseManagement(("Warehouse<br>Management"))
-    WarehouseManagement --- PurchaseOrder(("Purchase Order")) & ItemMaster
-    PurchaseOrder ---- ProductionOrder(("Production Order")) & GoodsReceiptPO(("Goods Receipt PO")) & Sourcing(("Sourcing")) & PurchaseQuotation
-    PurchaseQuotation --- PurchaseRequest(("Purchase Request"))
-    ItemMaster --- EquipmentCard
-    EquipmentCard --- ServiceCall(("Service Call"))
-    ServiceCall --- ServiceContract(("Service Contract"))
-    ServiceContract --- ServiceBilling(("Service Billing"))
-    Sourcing --- ProductionOrder
-    Sourcing ---- MaterialRequirementsPlanning(("Material Requirements<br>Planning"))
-    MaterialRequirementsPlanning ---> BillOfMaterials(("Bill of Materials"))
-    BillOfMaterials --- DemandPlanning(("Demand Planning"))
-    ProductionOrder --- DemandPlanning & BackorderReporting(("Backorder<br>Reporting")) & IssueToProduction(("Issue to Production"))
-    DemandPlanning --- BackorderReporting
-    BackorderReporting --- InventoryAuditReport(("Inventory Audit<br>Report"))
-    InventoryAuditReport --- IssueToProduction & AccountBalancesReport(("Account Balances<br>Report"))
-    AccountBalancesReport --- ReceiptFromProduction(("Receipt from Production")) & ProductReporting(("Product<br>Reporting"))
-    DeliveryNote --- ARInvoice(("AR Invoice")) & GoodsReceiptPO
-    GoodsReceiptPO --- IssueToProduction & APInvoice(("AP Invoice"))
-    IssueToProduction --- ReceiptFromProduction & JournalEntries(("Journal Entries"))
-    JournalEntries --- ReceiptFromProduction & CostAccounting(("Cost Accounting"))
-    CostAccounting --- GLAccountDetermination(("G/L Account<br>Determination"))
-    GLAccountDetermination --- GeneralLedgerAccounts(("General Ledger<br>Accounts"))
-    GeneralLedgerAccounts --- ChartOfAccounts(("Chart of Accounts"))
-    ReceiptFromProduction --- APInvoice & ProductReporting
-    ProductReporting --- FinancialReporting(("Financial<br>Reporting"))
-    FinancialReporting --- Reconciliation(("Reconciliation"))
-    Reconciliation --- CashManagement(("Cash Management"))
-    CashManagement --- APARIndicator(("AP / AR")) & IncomingPayments(("Incoming<br>Payments"))
-    APARIndicator --- ARInvoice
-    ARInvoice --- APInvoice & IncomingPayments
-    IncomingPayments --- OutgoingPayments(("Outgoing<br>Payments"))
-    OutgoingPayments --- APInvoice
+flowchart TD
+    classDef documento fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#0D47A1;
+    classDef decision fill:#FFF3E0,stroke:#EF6C00,stroke-width:2px,color:#E65100;
+    classDef pago fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#1B5E20;
+    classDef iniciofin fill:#4A148C,stroke:#12005E,stroke-width:3px,color:#FFFFFF;
+
+    Inicio(["🏁 Inicio"]):::iniciofin
+    Inicio --> SO[("Pedido de Venta<br/>Sales Order")]:::documento
+    SO --> TipoEntrega{{"Tipo de entrega"}}:::decision
+    TipoEntrega -->|Completa| EntregaTotal[("Entrega Completa<br/>Delivery")]:::documento
+    TipoEntrega -->|Parcial| EntregaParcial[("Entrega Parcial<br/>Delivery")]:::documento
+    EntregaTotal --> FacturaTotal[["Factura Cliente<br/>A/R Invoice"]]:::documento
+    EntregaParcial --> FacturaParcial[["Factura Cliente<br/>A/R Invoice"]]:::documento
+    FacturaTotal --> PagoTotal[/"Pago Recibido<br/>Incoming Payment"/]:::pago
+    FacturaParcial --> PagoParcial[/"Pago Recibido<br/>Incoming Payment"/]:::pago
+    PagoTotal --> Fin(["🏆 Pedido Completado"]):::iniciofin
+    PagoParcial --> Pendiente{{"¿Artículos pendientes<br/>por entregar?"}}:::decision
+    Pendiente -->|Sí| EntregaParcial
+    Pendiente -->|No| Fin
